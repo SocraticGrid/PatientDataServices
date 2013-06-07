@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Properties;
 import org.socraticgrid.documenttransformer.Transformer;
 
 /**
@@ -87,6 +88,8 @@ public class MainRetriever implements DataRetriever
                 String pipeline = ds.getTransforms().get(Domain);
                 if (pipeline != null)
                 {
+                    Properties props = new Properties();
+                    props.setProperty("patientId", Id);
                     return transformer.transformAsStream(pipeline, data);
                 }
                 else
