@@ -20,7 +20,7 @@ public class MainRetriever implements DataRetriever
 
     public MainRetriever()
     {
-        DataSources = new HashMap<String, DataSourceBinding>();
+
     }
     private Transformer transformer;
 

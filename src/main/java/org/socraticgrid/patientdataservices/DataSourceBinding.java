@@ -4,6 +4,7 @@
  */
 package org.socraticgrid.patientdataservices;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -38,7 +39,7 @@ public class DataSourceBinding
     {
         this.dataSource = dataSource;
     }
-       private Map<String, String> transforms;
+       private Map<String, String> transforms = new HashMap<String, String>();
 
     /**
      * Get the value of transforms (Domain -> Pipeline)
