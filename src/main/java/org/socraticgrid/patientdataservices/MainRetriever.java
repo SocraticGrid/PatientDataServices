@@ -86,7 +86,7 @@ public class MainRetriever implements DataRetriever
                 InputStream data = ds.getDataSource().getData(Domain, Id, null);
                 // Apply any transforms
                 String pipeline = ds.getTransforms().get(Domain);
-                if (pipeline != null)
+                if ((pipeline != null) &&(transformer!=null))
                 {
                     Properties props = new Properties();
                     props.setProperty("patientId", Id);
@@ -95,8 +95,8 @@ public class MainRetriever implements DataRetriever
                 else
                 {
                     //No Transform defined for the path
-                    //Todo Echo Soure data as Stream
-                    return null;
+                    //Give the Data found
+                    return data;
                 }
             }
             else
