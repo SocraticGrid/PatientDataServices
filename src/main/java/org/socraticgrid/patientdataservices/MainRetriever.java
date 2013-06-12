@@ -65,17 +65,17 @@ public class MainRetriever implements DataRetriever
         this.DataSources = DataSources;
     }
 
-    public String getData(String Source, String Domain, String Id)
+    public String getData(String Source, String Domain, String Id, Properties srcProps)
     {
-        return this.getStreamAsString(getDataAsStream(Source, Domain, Id));
+        return this.getStreamAsString(getDataAsStream(Source, Domain, Id, srcProps));
     }
 
-    public String getRawData(String Source, String Domain, String Id)
+    public String getRawData(String Source, String Domain, String Id, Properties srcProps)
     {
-        return this.getStreamAsString(getRawDataAsStream(Source, Domain, Id));
+        return this.getStreamAsString(getRawDataAsStream(Source, Domain, Id, srcProps));
     }
 
-    public InputStream getDataAsStream(String Source, String Domain, String Id)
+    public InputStream getDataAsStream(String Source, String Domain, String Id, Properties srcProps)
     {
         if (DataSources.containsKey(Source))
         {
@@ -84,7 +84,7 @@ public class MainRetriever implements DataRetriever
             if (ds.getDataSource().isDomainSupported(Domain))
             {
                 //Fetch Data Data by Id form the source
-                InputStream data = ds.getDataSource().getData(Domain, Id, null);
+                InputStream data = ds.getDataSource().getData(Domain, Id, srcProps);
                 // Apply any transforms
                 String pipeline = ds.getTransforms().get(Domain);
                 if ((pipeline != null) &&(transformer!=null))
@@ -109,7 +109,7 @@ public class MainRetriever implements DataRetriever
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public InputStream getRawDataAsStream(String Source, String Domain, String Id)
+    public InputStream getRawDataAsStream(String Source, String Domain, String Id, Properties srcProps)
     {
         if (DataSources.containsKey(Source))
         {
@@ -118,7 +118,7 @@ public class MainRetriever implements DataRetriever
             if (ds.getDataSource().isDomainSupported(Domain))
             {
                 //Fetch Data Data by Id form the source
-                return ds.getDataSource().getData(Domain, Id, null);
+                return ds.getDataSource().getData(Domain, Id, srcProps);
             }
             else
             {
