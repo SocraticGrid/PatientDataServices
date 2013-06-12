@@ -90,7 +90,7 @@ public class MainRetriever implements DataRetriever
                 {
                     Properties props = new Properties();
                     props.setProperty("patientId", Id);
-                    return transformer.transformAsStream(pipeline, data);
+                    return transformer.transformAsStream(pipeline, data, props);
                 }
                 else
                 {
