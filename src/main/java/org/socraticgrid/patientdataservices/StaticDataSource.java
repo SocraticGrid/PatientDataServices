@@ -47,7 +47,7 @@ public class StaticDataSource implements DataSource
        return domainResources.containsKey(domain);
     }
 
-    public InputStream getData(String domain, String id)
+    public InputStream getData(String domain, String id, java.util.Properties props)
     {
     
         InputStream out=null;

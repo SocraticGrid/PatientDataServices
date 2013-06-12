@@ -13,5 +13,5 @@ import java.io.InputStream;
 public interface DataSource
 {
     public boolean isDomainSupported(String domain);
-    public InputStream getData(String domain, String id);
+    public InputStream getData(String domain, String id, java.util.Properties props);
 }

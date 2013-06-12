@@ -22,7 +22,7 @@ public class BaseDataSource implements DataSource
        return false;
     }
 
-    public InputStream getData(String domain, String id)
+    public InputStream getData(String domain, String id, java.util.Properties props)
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

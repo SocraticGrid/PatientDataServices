@@ -83,7 +83,7 @@ public class MainRetriever implements DataRetriever
             if (ds.getDataSource().isDomainSupported(Domain))
             {
                 //Fetch Data Data by Id form the source
-                InputStream data = ds.getDataSource().getData(Domain, Id);
+                InputStream data = ds.getDataSource().getData(Domain, Id, null);
                 // Apply any transforms
                 String pipeline = ds.getTransforms().get(Domain);
                 if (pipeline != null)
@@ -117,7 +117,7 @@ public class MainRetriever implements DataRetriever
             if (ds.getDataSource().isDomainSupported(Domain))
             {
                 //Fetch Data Data by Id form the source
-                return ds.getDataSource().getData(Domain, Id);
+                return ds.getDataSource().getData(Domain, Id, null);
             }
             else
             {

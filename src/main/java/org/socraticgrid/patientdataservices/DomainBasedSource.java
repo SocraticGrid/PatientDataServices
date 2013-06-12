@@ -75,15 +75,15 @@ public class DomainBasedSource extends BaseDataSource
 
 
     @Override
-    public InputStream getData(String domain, String id)
+    public InputStream getData(String domain, String id, java.util.Properties props)
     {
         if (domainSource.containsKey(domain))
         {
-            return domainSource.get(domain).getData(domain, id);
+            return domainSource.get(domain).getData(domain, id, props);
         }
         else if (this.defaultSource!=null)
         {
-            return defaultSource.getData(domain, id);
+            return defaultSource.getData(domain, id, props);
         }
         else
         {
