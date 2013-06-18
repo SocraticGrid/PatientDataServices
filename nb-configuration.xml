@@ -10,6 +10,7 @@ Without this configuration present, some functionality in the IDE may be limited
         <config-files>
             <config-file>newSpringXMLConfig.xml</config-file>
             <config-file>ExampleSpringXMLConfig.xml</config-file>
+            <config-file>src/test/java/TestSpringXMLConfig.xml</config-file>
         </config-files>
         <config-file-groups/>
     </spring-data>
