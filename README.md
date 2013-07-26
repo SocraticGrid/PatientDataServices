@@ -21,6 +21,12 @@ Used to fetch Patient related documents by domain.
  Change History:
 ======================================================================================
 
+
+Version 1.3 ----------------------------------------
+
+  o   Add Multiple Domain Fetch & Merge 
+
+
 Version 1.2 ----------------------------------------
 
   o   Base Integration tests and Upgrade to Document Transform 1.2
