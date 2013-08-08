@@ -42,11 +42,13 @@ public class StaticDataSource implements DataSource
         this.domainResources = domainResources;
     }
 
+    @Override
     public boolean isDomainSupported(String domain)
     {
        return domainResources.containsKey(domain);
     }
 
+    @Override
     public InputStream getData(String domain, String id, java.util.Properties props)
     {
     
