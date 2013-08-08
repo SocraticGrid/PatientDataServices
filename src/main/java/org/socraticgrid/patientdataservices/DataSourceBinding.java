@@ -6,6 +6,7 @@ package org.socraticgrid.patientdataservices;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.socraticgrid.documenttransformer.MergeTransformer;
 
 /**
  *
@@ -59,6 +60,48 @@ public class DataSourceBinding
     public void setTransforms(Map<String, String> transforms)
     {
         this.transforms = transforms;
+    }
+    private MergeTransformer mergeTransformer;
+
+    /**
+     * Get the value of mergeTransformer
+     *
+     * @return the value of mergeTransformer
+     */
+    public MergeTransformer getMergeTransformer()
+    {
+        return mergeTransformer;
+    }
+
+    /**
+     * Set the value of mergeTransformer
+     *
+     * @param mergeTransformer new value of mergeTransformer
+     */
+    public void setMergeTransformer(MergeTransformer mergeTransformer)
+    {
+        this.mergeTransformer = mergeTransformer;
+    }
+    private String mergePipelineName;
+
+    /**
+     * Get the value of mergePipelineName
+     *
+     * @return the value of mergePipelineName
+     */
+    public String getMergePipelineName()
+    {
+        return mergePipelineName;
+    }
+
+    /**
+     * Set the value of mergePipelineName
+     *
+     * @param mergePipelineName new value of mergePipelineName
+     */
+    public void setMergePipelineName(String mergePipelineName)
+    {
+        this.mergePipelineName = mergePipelineName;
     }
 
 }

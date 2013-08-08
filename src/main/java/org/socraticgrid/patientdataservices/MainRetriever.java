@@ -40,6 +40,8 @@
  * *************************************************************************************************************/
 package org.socraticgrid.patientdataservices;
 
+import org.apache.commons.io.IOUtils;
+
 import org.socraticgrid.documenttransformer.Transformer;
 
 import java.io.ByteArrayOutputStream;
@@ -48,9 +50,11 @@ import java.io.InputStream;
 
 import java.util.Map;
 import java.util.Properties;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.io.IOUtils;
+import javax.xml.transform.stream.StreamSource;
+import org.socraticgrid.documenttransformer.TransformInput;
 
 
 /**
@@ -60,10 +64,11 @@ import org.apache.commons.io.IOUtils;
  */
 public class MainRetriever implements DataRetriever
 {
+    private static final Logger logger = Logger.getLogger(MainRetriever.class
+            .getName());
     private Map<String, DataSourceBinding> DataSources;
     private Transformer transformer;
-    private final static Logger logger = Logger.getLogger(MainRetriever.class.getName());
-    
+
     public MainRetriever()
     {
     }
@@ -83,63 +88,46 @@ public class MainRetriever implements DataRetriever
         if (DataSources.containsKey(Source))
         {
 
-            // Valid Source
-            DataSourceBinding ds = DataSources.get(Source);
-
-            if (ds.getDataSource().isDomainSupported(Domain))
+            if (Domain.contains(";") == false)
             {
-
-                // Fetch Data Data by Id form the source
-                InputStream data = ds.getDataSource().getData(Domain, Id, srcProps);
-
-                // Apply any transforms
-                String pipeline = ds.getTransforms().get(Domain);
-
-                if ((pipeline != null) && (transformer != null))
-                {
-                    Properties props = new Properties();
-                    props.setProperty("patientId", Id);
-                    
-                    if (logger.isLoggable(Level.FINE))
-                    {
-                        logger.log(Level.FINE, "Transfroming on pipeline {0}", pipeline);
-                        if (data.markSupported())
-                        {
-                           try
-                           {
-                             String out = IOUtils.toString(data, "UTF-8");
-                             data.reset();
-                             logger.fine("Stream prior to Transform");
-                             logger.fine(out);
-                           }
-                           catch(IOException exp)
-                           {
-                               logger.log(Level.FINE, "Error converting Stream to string for diagnosistic output", exp);
-                           }
-                           
-                        }
-                        else
-                        {
-                            logger.fine("Stream does not support role back, can not dump to log");
-                        }
-                    }
-                    return transformer.transformAsStream(pipeline, data, props);
-                }
-                else
-                {
-
-                    // No Transform defined for the path
-                    // Give the Data found
-                    return data;
-                }
+                return this.internalGetDomainAsStream(Source, Domain, Id, srcProps);
             }
             else
             {
-                // Error Invalid input
+
+                // Valid Source
+                DataSourceBinding ds = DataSources.get(Source);
+
+                if (ds.getMergeTransformer() == null)
+                {   
+                    //Since now merge transformer is defined delgate this call
+                    return this.internalGetDomainAsStream(Source, Domain, Id, srcProps);
+                }
+                else
+                {
+                  //First loop each domain and collect the results
+                  StringTokenizer tok = new StringTokenizer(Domain,";");
+                  TransformInput in = new  TransformInput();
+                  boolean  baseFnd = false;
+                  while (tok.hasMoreTokens())
+                  {
+                      String dom = tok.nextToken();
+                      if (baseFnd == false)
+                      {
+                          in.setBaseStreamName(dom);
+                          baseFnd=true;
+                      }
+                      InputStream res = this.internalGetDomainAsStream(Source, dom, Id, srcProps);
+                      StreamSource src = new StreamSource(res);
+                      in.setStream(dom, src);
+                  }
+                  return ds.getMergeTransformer().transformAsStream(ds.getMergePipelineName(), in, srcProps);
+                }
             }
         }
 
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Source [" + Source +
+            "] is not supported");
     }
 
     /**
@@ -194,6 +182,78 @@ public class MainRetriever implements DataRetriever
     public Transformer getTransformer()
     {
         return transformer;
+    }
+
+    public InputStream internalGetDomainAsStream(String Source, String Domain,
+        String Id, Properties srcProps)
+    {
+
+        if (DataSources.containsKey(Source))
+        {
+
+            // Valid Source
+            DataSourceBinding ds = DataSources.get(Source);
+
+            if (ds.getDataSource().isDomainSupported(Domain))
+            {
+
+                // Fetch Data Data by Id form the source
+                InputStream data = ds.getDataSource().getData(Domain, Id, srcProps);
+
+                // Apply any transforms
+                String pipeline = ds.getTransforms().get(Domain);
+
+                if ((pipeline != null) && (transformer != null))
+                {
+                    Properties props = new Properties();
+                    props.setProperty("patientId", Id);
+
+                    if (logger.isLoggable(Level.FINE))
+                    {
+                        logger.log(Level.FINE, "Transfroming on pipeline {0}",
+                            pipeline);
+
+                        if (data.markSupported())
+                        {
+
+                            try
+                            {
+                                String out = IOUtils.toString(data, "UTF-8");
+                                data.reset();
+                                logger.fine("Stream prior to Transform");
+                                logger.fine(out);
+                            }
+                            catch (IOException exp)
+                            {
+                                logger.log(Level.FINE,
+                                    "Error converting Stream to string for diagnosistic output",
+                                    exp);
+                            }
+                        }
+                        else
+                        {
+                            logger.fine(
+                                "Stream does not support role back, can not dump to log");
+                        }
+                    }
+
+                    return transformer.transformAsStream(pipeline, data, props);
+                }
+                else
+                {
+
+                    // No Transform defined for the path
+                    // Give the Data found
+                    return data;
+                }
+            }
+            else
+            {
+                // Error Invalid input
+            }
+        }
+
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**
